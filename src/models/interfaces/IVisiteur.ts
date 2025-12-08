@@ -9,6 +9,7 @@ export interface IVisiteur {
   tel: string;              // {{lastVisiteurTel}}
   dateEmbauche: Date;       // {{lastVisiteurDatePast}}
   dateCreation?: Date;
+  portefeuille?: string[];
 }
 
 /**

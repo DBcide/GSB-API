@@ -45,7 +45,10 @@ const visiteurSchema = new Schema<IVisiteurDocument>(
     dateCreation: {
       type: Date,
       default: Date.now
-    }
+    },
+    portefeuille: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Praticien" }
+    ],
   },
   {
     versionKey: false
