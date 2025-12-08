@@ -98,6 +98,25 @@ export class VisiteurService {
             throw error;
         }
     }
+
+    /**
+     * Ajouter un praticien au portefeuille d'un visiteur
+     */
+    async addPraticienToPortefeuille(idVisiteur: string, idPraticien: string) {
+    return await VisiteurModel.findByIdAndUpdate(
+        idVisiteur,
+        { $addToSet: { portefeuille: idPraticien } },
+        { new: true }
+    );
+}
+
+    /**
+     * Récupérer le portefeuille d'un visiteur
+     */
+    async getPortefeuille(idVisiteur: string) {
+        return await VisiteurModel.findById(idVisiteur).populate("portefeuille");
+    }
+
 }
 
 // Export d'une instance unique

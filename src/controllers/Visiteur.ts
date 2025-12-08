@@ -47,6 +47,31 @@ class VisiteurController {
             res.status(404).json({ error: error.message });
         }
     }
+    
+    async addPraticien(req: Request, res: Response) {
+    try {
+        const { idVisiteur, idPraticien } = req.body;
+
+        const visiteur = await service.addPraticienToPortefeuille(idVisiteur, idPraticien);
+
+        res.status(200).json(visiteur);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur ajout praticien", error });
+    }
+  } 
+
+  async getPortefeuille(req: Request, res: Response) {
+    try {
+        const { idVisiteur } = req.params;
+
+        const portefeuille = await service.getPortefeuille(idVisiteur);
+
+        res.status(200).json(portefeuille);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur récupération portefeuille", error });
+    }
+  }
+
 }
 
 export default new VisiteurController();
