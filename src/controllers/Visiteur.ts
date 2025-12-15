@@ -47,31 +47,53 @@ class VisiteurController {
             res.status(404).json({ error: error.message });
         }
     }
-    
-    async addPraticien(req: Request, res: Response) {
-    try {
-        const { idVisiteur, idPraticien } = req.body;
 
-        const visiteur = await service.addPraticienToPortefeuille(idVisiteur, idPraticien);
+    // -------------------------------
+    // AJOUTER UN PRATICIEN AU PORTEFEUILLE
+    addPraticien = async (req: Request, res: Response) => {
+        try {
+            const { idVisiteur, idPraticien } = req.body;
 
-        res.status(200).json(visiteur);
-    } catch (error) {
-        res.status(500).json({ message: "Erreur ajout praticien", error });
+            if (!idVisiteur || !idPraticien) {
+                return res.status(400).json({ error: 'idVisiteur et idPraticien sont obligatoires' });
+            }
+
+            const visiteur = await service.addPraticienToPortefeuille(idVisiteur, idPraticien);
+
+            if (!visiteur) {
+                return res.status(404).json({ error: 'Visiteur ou praticien introuvable' });
+            }
+
+            res.status(200).json(visiteur);
+        } catch (error: any) {
+            // Retourner l'erreur complète pour le debug
+            console.error('Erreur addPraticien:', error);
+            res.status(500).json({ message: "Erreur ajout praticien", error: error.message });
+        }
     }
-  } 
 
-  async getPortefeuille(req: Request, res: Response) {
-    try {
-        const { idVisiteur } = req.params;
+    // -------------------------------
+    // RÉCUPÉRER LE PORTEFEUILLE D'UN VISITEUR
+    getPortefeuille = async (req: Request, res: Response) => {
+        try {
+            const { idVisiteur } = req.params;
 
-        const portefeuille = await service.getPortefeuille(idVisiteur);
+            if (!idVisiteur) {
+                return res.status(400).json({ error: 'idVisiteur est obligatoire' });
+            }
 
-        res.status(200).json(portefeuille);
-    } catch (error) {
-        res.status(500).json({ message: "Erreur récupération portefeuille", error });
+            const portefeuille = await service.getPortefeuille(idVisiteur);
+
+            if (!portefeuille) {
+                return res.status(404).json({ error: 'Visiteur introuvable' });
+            }
+
+            res.status(200).json(portefeuille.portefeuille); // on renvoie seulement le portefeuille
+        } catch (error: any) {
+            console.error('Erreur getPortefeuille:', error);
+            res.status(500).json({ message: "Erreur récupération portefeuille", error: error.message });
+        }
     }
-  }
-
 }
 
 export default new VisiteurController();

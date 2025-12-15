@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 /**
  * Interface représentant un visiteur
  */
@@ -9,7 +11,7 @@ export interface IVisiteur {
   tel: string;              // {{lastVisiteurTel}}
   dateEmbauche: Date;       // {{lastVisiteurDatePast}}
   dateCreation?: Date;
-  portefeuille?: string[];
+  portefeuille?: string[]; // Liste des IDs des praticiens dans le portefeuille
 }
 
 /**

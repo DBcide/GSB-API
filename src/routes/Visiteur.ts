@@ -3,13 +3,15 @@ import VisiteurController from '../controllers/Visiteur';
 
 const router = Router();
 
+// Routes classiques CRUD
 router.post('/', VisiteurController.create);
 router.get('/', VisiteurController.getAll);
 router.get('/:id', VisiteurController.getById);
 router.put('/:id', VisiteurController.update);
 router.delete('/:id', VisiteurController.delete);
-router.post('/add-praticien', VisiteurController.addPraticien);
-router.get('/:idVisiteur/portefeuille', VisiteurController.getPortefeuille);
 
+// Routes pour le portefeuille
+router.post('/add-praticien', VisiteurController.addPraticien); // Ajout praticien au portefeuille
+router.get('/:idVisiteur/portefeuille', VisiteurController.getPortefeuille); // Récupérer portefeuille
 
 export default router;
