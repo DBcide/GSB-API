@@ -117,8 +117,32 @@ class VisiteurController {
     } catch (error: any) {
         console.error('Erreur removePraticien:', error);
         res.status(500).json({ message: "Erreur suppression praticien", error: error.message });
-    }
+    }   
 }
+
+    stopSuiviPraticien = async (req: Request, res: Response) => {
+    try {
+        const { idVisiteur, idPraticien } = req.params;
+
+        if (!idVisiteur || !idPraticien) {
+            return res.status(400).json({ error: 'idVisiteur et idPraticien sont obligatoires' });
+        }
+
+        const visiteur = await service.stopSuiviPraticien(idVisiteur, idPraticien);
+
+        res.status(200).json({
+            message: 'Le suivi du praticien a été arrêté',
+            portefeuille: visiteur.portefeuille
+        });
+    } catch (error: any) {
+        console.error('Erreur arrêt suivi praticien:', error.message);
+        res.status(400).json({
+            message: 'Erreur arrêt suivi praticien',
+            error: error.message
+        });
+    }
+};
+
 }
 
 export default new VisiteurController();

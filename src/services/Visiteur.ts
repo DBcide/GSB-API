@@ -125,6 +125,18 @@ export class VisiteurService {
     );
 }
 
+    async stopSuiviPraticien(idVisiteur: string, idPraticien: string) {
+    // On cherche le visiteur et on met à jour le praticien ciblé dans le portefeuille
+    const visiteur = await VisiteurModel.findOneAndUpdate(
+        { _id: idVisiteur, 'portefeuille.praticien': idPraticien },
+        { $set: { 'portefeuille.$.dateFinSuivi': null } }, // met fin au suivi
+        { new: true }
+    ).populate('portefeuille.praticien', 'nom prenom specialite');
+
+    if (!visiteur) throw new Error('Visiteur ou praticien introuvable');
+
+    return visiteur;
+  }
 }
 
 // Export d'une instance unique

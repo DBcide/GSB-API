@@ -15,6 +15,7 @@ router.post('/add-praticien', VisiteurController.addPraticien); // Ajout pratici
 router.get('/:idVisiteur/portefeuille', VisiteurController.getPortefeuille);
 // Supprimer un praticien du portefeuille
 router.delete('/portefeuille', VisiteurController.removePraticien);
+router.patch('/visiteurs/:idVisiteur/portefeuille/:idPraticien', VisiteurController.stopSuiviPraticien);
 
 
 export default router;

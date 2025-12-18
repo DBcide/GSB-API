@@ -12,8 +12,18 @@ const visiteurSchema = new Schema<IVisiteurDocument>(
     dateEmbauche: { type: Date, required: true },
     dateCreation: { type: Date, default: Date.now },
      // portefeuille est une liste d'IDs de praticiens
-    portefeuille: [{ type: Schema.Types.ObjectId, ref: 'Praticien' }]
-  }, { timestamps: true });
+    portefeuille: [
+  {
+    praticien: { type: Schema.Types.ObjectId, ref: 'Praticien', required: true },
+    dateDebutSuivi: { type: Date, default: Date.now },
+    dateFinSuivi: { type: Date, default: null } // null si le suivi est actif
+  }
+]
+  },
+  {
+    timestamps: true
+  }
+);
 
 export const VisiteurModel: Model<IVisiteurDocument> = mongoose.model<IVisiteurDocument>(
   'Visiteur',

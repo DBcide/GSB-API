@@ -14,6 +14,7 @@ class PortefeuilleService {
     static async getPortefeuillesByVisiteur(visiteurId: string) {
         return Portefeuille.find({ visiteur: visiteurId }).populate('praticien');
     }
+
 }
 
 export default PortefeuilleService;
