@@ -97,29 +97,28 @@ class VisiteurController {
 
     // Retirer un praticien du portefeuille
     removePraticien = async (req: Request, res: Response) => {
-        try {
-            const { idVisiteur, idPraticien } = req.body;
+    try {
+        const { idVisiteur, idPraticien } = req.body;
 
-            if (!idVisiteur || !idPraticien) {
-                return res.status(400).json({ error: 'idVisiteur et idPraticien sont obligatoires' });
-            }
-
-            const visiteur = await service.removePraticienFromPortefeuille(idVisiteur, idPraticien);
-
-            if (!visiteur) {
-                return res.status(404).json({ error: 'Visiteur ou praticien introuvable' });
-            }
-
-            res.status(200).json({ 
-                message: 'Praticien supprimé du portefeuille', 
-                portefeuille: visiteur.portefeuille 
-            });
-        } catch (error: any) {
-            console.error('Erreur removePraticien:', error);
-            res.status(500).json({ message: "Erreur suppression praticien", error: error.message });
+        if (!idVisiteur || !idPraticien) {
+            return res.status(400).json({ error: 'idVisiteur et idPraticien sont obligatoires' });
         }
+
+        const visiteur = await service.removePraticienFromPortefeuille(idVisiteur, idPraticien);
+
+        if (!visiteur) {
+            return res.status(404).json({ error: 'Visiteur ou praticien introuvable' });
+        }
+
+        res.status(200).json({ 
+            message: 'Praticien supprimé du portefeuille', 
+            portefeuille: visiteur.portefeuille 
+        });
+    } catch (error: any) {
+        console.error('Erreur removePraticien:', error);
+        res.status(500).json({ message: "Erreur suppression praticien", error: error.message });
     }
 }
-
+}
 
 export default new VisiteurController();

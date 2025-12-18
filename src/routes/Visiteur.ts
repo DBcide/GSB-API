@@ -13,6 +13,8 @@ router.delete('/:id', VisiteurController.delete);
 // Routes pour le portefeuille
 router.post('/add-praticien', VisiteurController.addPraticien); // Ajout praticien au portefeuille
 router.get('/:idVisiteur/portefeuille', VisiteurController.getPortefeuille);
-router.post('/remove-praticien', VisiteurController.removePraticien); // Suppression praticien du portefeuille
+// Supprimer un praticien du portefeuille
+router.delete('/portefeuille', VisiteurController.removePraticien);
+
 
 export default router;
