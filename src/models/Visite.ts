@@ -6,7 +6,7 @@ export type IVisiteDocument = IVisite & Document;
 
 const visiteSchema = new Schema<IVisiteDocument>(
   {
-    date: {
+    dateVisite: {
       type: Date,
       required: [true, 'La date de la visite est obligatoire']
     },
@@ -35,7 +35,7 @@ const visiteSchema = new Schema<IVisiteDocument>(
       type: Date,
       default: Date.now
     }
-  },
+  } as any,
   {
     versionKey: false
   }

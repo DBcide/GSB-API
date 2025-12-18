@@ -6,6 +6,8 @@ import { Database } from './config/database';
 import { UserRoutes } from './routes/User';
 import visiteurRoutes from './routes/Visiteur'; // import direct du router
 import visiteRoutes from './routes/Visite';
+import praticienRoutes from './routes/Praticien';
+
 
 // Chargement des variables d'environnement
 dotenv.config();
@@ -75,6 +77,9 @@ class App {
 
     // Routes visites
     this.app.use('/api/visites', visiteRoutes);
+
+    // Routes praticiens
+    this.app.use('/api/praticiens', praticienRoutes);
   }
 
   /**

@@ -34,31 +34,30 @@ export class VisiteurService {
     /**
      * Récupérer tous les visiteurs
      */
-    public async getAllVisiteurs(): Promise<IVisiteurDocument[]> {
-        try {
-            return await VisiteurModel.find().sort({ dateCreation: -1 }).exec();
-        } catch (error) {
-            throw new Error('Erreur lors de la récupération des visiteurs');
-        }
+    public async getAllVisiteurs(): Promise<Partial<IVisiteurDocument>[]> {
+    try {
+        const visiteurs = await VisiteurModel.find()
+            .sort({ dateCreation: -1 })
+            .select('nom prenom email portefeuille') // <--- ici on choisit les champs à afficher
+            .populate('portefeuille', 'nom prenom specialite'); // si tu veux les détails des praticiens
+        return visiteurs;
+    } catch (error) {
+        throw new Error('Erreur lors de la récupération des visiteurs');
     }
+}
+
 
     /**
      * Récupérer un visiteur par son ID
      */
-    public async getVisiteurById(id: string): Promise<IVisiteurDocument | null> {
-        try {
-            const visiteur = await VisiteurModel.findById(id).exec();
-            if (!visiteur) {
-                throw new Error(`Visiteur avec l'ID ${id} introuvable`);
-            }
-            return visiteur;
-        } catch (error: any) {
-            if (error.name === 'CastError') {
-                throw new Error(`ID invalide: ${id}`);
-            }
-            throw error;
-        }
-    }
+    public async getVisiteurById(id: string): Promise<Partial<IVisiteurDocument> | null> {
+    const visiteur = await VisiteurModel.findById(id)
+        .select('nom prenom email portefeuille')
+        .populate('portefeuille', 'nom prenom specialite');
+    if (!visiteur) throw new Error(`Visiteur avec l'ID ${id} introuvable`);
+    return visiteur;
+}
+
 
     /**
      * Mettre à jour un visiteur par son ID
@@ -116,6 +115,15 @@ export class VisiteurService {
     async getPortefeuille(idVisiteur: string) {
         return await VisiteurModel.findById(idVisiteur).populate("portefeuille");
     }
+
+    // Supprimer un praticien du portefeuille
+    async removePraticienFromPortefeuille(idVisiteur: string, idPraticien: string) {
+    return await VisiteurModel.findByIdAndUpdate(
+        idVisiteur,
+        { $pull: { portefeuille: idPraticien } }, // $pull retire l'élément
+        { new: true }
+    );
+}
 
 }
 
