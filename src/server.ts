@@ -3,11 +3,17 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { Database } from './config/database';
+
+// 🔹 Chargement® des modèles (IMPORTANT pour Mongoose)
+import './models/Visiteur';
+import './models/Praticien';
+
+// 🔹 Routes
 import { UserRoutes } from './routes/User';
-import visiteurRoutes from './routes/Visiteur'; // import direct du router
+import visiteurRoutes from './routes/Visiteur';
 import visiteRoutes from './routes/Visite';
 import praticienRoutes from './routes/Praticien';
-
+import portefeuilleRoutes from './routes/Portefeuille';
 
 // Chargement des variables d'environnement
 dotenv.config();
@@ -34,13 +40,8 @@ class App {
    * Configure les middlewares Express
    */
   private initializeMiddlewares(): void {
-    // Parse le JSON dans les requêtes
     this.app.use(express.json());
-
-    // Parse les données URL-encoded
     this.app.use(express.urlencoded({ extended: true }));
-
-    // Active CORS pour toutes les origines
     this.app.use(cors());
   }
 
@@ -53,13 +54,10 @@ class App {
       res.json({
         message: 'API REST Express.js + TypeScript + MongoDB',
         version: '1.0.0',
-        endpoints: {
-          health: '/health',
-        },
       });
     });
 
-    // Route de santé pour vérifier que l'API fonctionne
+    // Health check
     this.app.get('/health', (_req: Request, res: Response) => {
       res.json({
         status: 'OK',
@@ -75,6 +73,9 @@ class App {
     // Routes visiteurs
     this.app.use('/api/visiteurs', visiteurRoutes);
 
+    // Routes portefeuille
+    this.app.use('/api/portefeuilles', portefeuilleRoutes);
+
     // Routes visites
     this.app.use('/api/visites', visiteRoutes);
 
@@ -83,7 +84,7 @@ class App {
   }
 
   /**
-   * Initialise la connexion à la base de données
+   * Démarre la connexion à la base de données
    */
   private async initializeDatabase(): Promise<void> {
     await this.database.connect();
@@ -102,11 +103,11 @@ class App {
   }
 }
 
-// Création et démarrage de l'application
+// Lancement du serveur
 const app = new App();
 app.listen();
 
-// Gestion de l'arrêt du serveur
+// Gestion arrêt serveur
 process.on('SIGINT', async () => {
   console.log('\nArrêt du serveur...');
   await Database.getInstance().disconnect();
