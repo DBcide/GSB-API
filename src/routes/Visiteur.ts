@@ -1,21 +1,12 @@
 import { Router } from 'express';
-import VisiteurController from '../controllers/Visiteur';
+import controller from '../controllers/Visiteur';
 
 const router = Router();
 
-// Routes classiques CRUD
-router.post('/', VisiteurController.create);
-router.get('/', VisiteurController.getAll);
-router.get('/:id', VisiteurController.getById);
-router.put('/:id', VisiteurController.update);
-router.delete('/:id', VisiteurController.delete);
-
-// Routes pour le portefeuille
-router.post('/add-praticien', VisiteurController.addPraticien); // Ajout praticien au portefeuille
-router.get('/:idVisiteur/portefeuille', VisiteurController.getPortefeuille);
-// Supprimer un praticien du portefeuille
-router.delete('/portefeuille', VisiteurController.removePraticien);
-router.patch('/visiteurs/:idVisiteur/portefeuille/:idPraticien', VisiteurController.stopSuiviPraticien);
-
+router.post('/', controller.create);
+router.get('/', controller.getAll);
+router.get('/:id', controller.getById);
+router.put('/:id', controller.update);
+router.delete('/:id', controller.delete);
 
 export default router;

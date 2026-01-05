@@ -1,20 +1,50 @@
-import Portefeuille from '../models/Portefeuille';
+import Visiteur from '../models/Visiteur';
+import Praticien from '../models/Praticien';
 
 class PortefeuilleService {
-    static async createPortefeuille(visiteurId: string, praticienId: string, dateDebut: Date, dateFin?: Date) {
-        const portefeuille = new Portefeuille({
-            visiteur: visiteurId,
-            praticien: praticienId,
-            dateDebutSuivi: dateDebut,
-            dateFinSuivi: dateFin,
-        });
-        return portefeuille.save();
+
+    async addPraticien(idVisiteur: string, idPraticien: string) {
+        const visiteur = await Visiteur.findById(idVisiteur);
+        const praticien = await Praticien.findById(idPraticien);
+
+        if (!visiteur || !praticien) {
+            throw new Error('Visiteur ou praticien introuvable');
+        }
+
+        if (!visiteur.portefeuille.includes(praticien._id)) {
+            visiteur.portefeuille.push(praticien._id);
+            await visiteur.save();
+        }
+
+        return visiteur;
     }
 
-    static async getPortefeuillesByVisiteur(visiteurId: string) {
-        return Portefeuille.find({ visiteur: visiteurId }).populate('praticien');
+    async getPortefeuille(idVisiteur: string) {
+        const visiteur = await Visiteur.findById(idVisiteur)
+            .populate('portefeuille');
+
+        if (!visiteur) {
+            throw new Error('Visiteur introuvable');
+        }
+
+        return visiteur.portefeuille;
     }
 
+    async removePraticien(idVisiteur: string, idPraticien: string) {
+        const visiteur = await Visiteur.findById(idVisiteur);
+
+        if (!visiteur) {
+            throw new Error('Visiteur introuvable');
+        }
+
+        visiteur.portefeuille = visiteur.portefeuille.filter(
+            (p: any) => p.toString() !== idPraticien
+        );
+
+        await visiteur.save();
+
+        return visiteur.portefeuille;
+    }
 }
 
-export default PortefeuilleService;
+export default new PortefeuilleService();
