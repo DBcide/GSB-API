@@ -4,7 +4,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { Database } from './config/database';
 
-// 🔹 Chargement® des modèles (IMPORTANT pour Mongoose)
+// 🔐 Rate limiter
+import { apiLimiter } from './middlewares/Ratelimiter';
+
+// 🔹 Chargement des modèles (IMPORTANT pour Mongoose)
 import './models/Visiteur';
 import './models/Praticien';
 
@@ -49,7 +52,11 @@ class App {
    * Configure les routes de l'application
    */
   private initializeRoutes(): void {
-    // Route de test
+
+    // 🔐 Rate limiter appliqué à toute l’API
+    this.app.use('/api', apiLimiter);
+
+    // Route racine
     this.app.get('/', (_req: Request, res: Response) => {
       res.json({
         message: 'API REST Express.js + TypeScript + MongoDB',
@@ -57,7 +64,7 @@ class App {
       });
     });
 
-    // Health check
+    // Health check (non limité)
     this.app.get('/health', (_req: Request, res: Response) => {
       res.json({
         status: 'OK',
