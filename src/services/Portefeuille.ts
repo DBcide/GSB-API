@@ -11,6 +11,10 @@ class PortefeuilleService {
             throw new Error('Visiteur ou praticien introuvable');
         }
 
+        if (!visiteur.portefeuille) {
+            visiteur.portefeuille = [];
+        }
+
         if (!visiteur.portefeuille.includes(praticien._id)) {
             visiteur.portefeuille.push(praticien._id);
             await visiteur.save();
@@ -37,7 +41,7 @@ class PortefeuilleService {
             throw new Error('Visiteur introuvable');
         }
 
-        visiteur.portefeuille = visiteur.portefeuille.filter(
+        visiteur.portefeuille = (visiteur.portefeuille || []).filter(
             (p: any) => p.toString() !== idPraticien
         );
 

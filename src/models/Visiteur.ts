@@ -25,7 +25,9 @@ const visiteurSchema = new Schema<IVisiteurDocument>(
   }
 );
 
-export const VisiteurModel: Model<IVisiteurDocument> = mongoose.model<IVisiteurDocument>(
+ const VisiteurModel: Model<IVisiteurDocument> = mongoose.model<IVisiteurDocument>(
   'Visiteur',
   visiteurSchema
 );
+
+export default VisiteurModel;
