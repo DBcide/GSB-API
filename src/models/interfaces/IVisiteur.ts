@@ -1,5 +1,3 @@
-import { Types } from "mongoose";
-
 /**
  * Interface représentant un visiteur
  */
@@ -8,6 +6,7 @@ export interface IVisiteur {
   nom: string;              // {{lastVisiteurNom}}
   prenom: string;           // {{lastVisiteurPrenom}}
   email: string;            // {{lastVisiteurEmail}}
+  password: string;         // Mot de passe hashé
   tel: string;              // {{lastVisiteurTel}}
   dateEmbauche: Date;       // {{lastVisiteurDatePast}}
   dateCreation?: Date;
@@ -21,6 +20,7 @@ export interface ICreateVisiteur {
   nom: string;
   prenom: string;
   email: string;
+  password: string;
   tel: string;
   dateEmbauche: Date;
 }

@@ -1,6 +1,8 @@
 // src/services/Visiteur.ts
-import { VisiteurModel, IVisiteurDocument } from '../models/Visiteur';
+import VisiteurModel, { IVisiteurDocument } from '../models/Visiteur';
 import { ICreateVisiteur } from '../models/interfaces/IVisiteur';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 /**
  * Service pour gérer la logique métier des visiteurs
@@ -26,6 +28,77 @@ export class VisiteurService {
             if (error.name === 'ValidationError') {
                 const messages = Object.values(error.errors).map((err: any) => err.message);
                 throw new Error(`Validation échouée: ${messages.join(', ')}`);
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Créer un compte visiteur avec mot de passe hashé
+     */
+    public async creerUnCompte(visiteurData: ICreateVisiteur): Promise<IVisiteurDocument> {
+        try {
+            // Vérifier si l'email existe déjà
+            const existingVisiteur = await VisiteurModel.findOne({ email: visiteurData.email });
+
+            if (existingVisiteur) {
+                throw new Error(`Un visiteur avec l'email ${visiteurData.email} existe déjà`);
+            }
+            // Créer et sauvegarder le visiteur
+            const hashedPassword = await bcrypt.hash(visiteurData.password, 10);
+            const visiteur = new VisiteurModel({
+                email: visiteurData.email,
+                password: hashedPassword,
+                nom: visiteurData.nom,
+                prenom: visiteurData.prenom,
+                tel: visiteurData.tel,
+                dateEmbauche: visiteurData.dateEmbauche
+            });
+            await visiteur.save();
+
+            // Ne pas retourner le mot de passe
+            const visiteurSansPassword = await VisiteurModel.findById(visiteur._id).select('-password');
+            return visiteurSansPassword!;
+        } catch (error: any) {
+            // Gestion des erreurs de validation Mongoose
+            if (error.name === 'ValidationError') {
+                const messages = Object.values(error.errors).map((err: any) => err.message);
+                const errorMessage = `Validation échouée: ${messages.join(', ')}`;
+                console.error('[ValidationError]', errorMessage);
+                throw new Error(errorMessage);
+            }
+            console.error('[Error]', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Se connecter avec email et mot de passe
+     */
+    public async seConnecter(email: string, password: string): Promise<{ token: string; visiteur: IVisiteurDocument }> {
+        try {
+            const visiteur = await VisiteurModel.findOne({ email });
+
+            if (!visiteur) {
+                throw new Error('Email ou mot de passe incorrect');
+            }
+            const isPasswordValid = await bcrypt.compare(password, visiteur.password);
+            if (!isPasswordValid) {
+                throw new Error('Email ou mot de passe incorrect');
+            }
+            const token = jwt.sign(
+                { visiteurId: visiteur._id, role: 'visiteur' },
+                process.env.JWT_SECRET as string,
+                { expiresIn: '1h', algorithm: 'HS256' }
+            );
+
+            // Ne pas retourner le mot de passe
+            const visiteurSansPassword = await VisiteurModel.findById(visiteur._id).select('-password');
+            return { token, visiteur: visiteurSansPassword! };
+
+        } catch (error: any) {
+            if (error.name === 'CastError') {
+                throw new Error(`Error lors de la connexion: ${error.message}`);
             }
             throw error;
         }

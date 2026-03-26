@@ -42,6 +42,7 @@ export class Database {
       const dbUsername = process.env.DB_USERNAME;
       const dbPassword = process.env.DB_PASSWORD;
       const dbName = process.env.DB_NAME || 'api-rest-express';
+      const dbCluster = process.env.DB_CLUSTER || 'api-rest-cours.zmsfyav.mongodb.net';
 
 
       if (!dbUsername || !dbPassword) {
@@ -50,7 +51,7 @@ export class Database {
 
 
       const encodedPassword = encodeURIComponent(dbPassword);
-      const mongoUri = `mongodb+srv://${dbUsername}:${encodedPassword}@api-rest-cours.zmsfyav.mongodb.net/${dbName}?retryWrites=true&w=majority&appName=Cluster0`;
+      const mongoUri = `mongodb+srv://${dbUsername}:${encodedPassword}@${dbCluster}/${dbName}?retryWrites=true&w=majority&appName=API-cours`;
 
 
       await mongoose.connect(mongoUri);

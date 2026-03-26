@@ -1,6 +1,7 @@
 // src/server.ts
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { Database } from './config/database';
 
@@ -43,9 +44,19 @@ class App {
    * Configure les middlewares Express
    */
   private initializeMiddlewares(): void {
+    // Sécurité des headers HTTP avec Helmet
+    this.app.use(helmet());
+
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(cors());
+
+    // CORS configuré (à restreindre en production)
+    this.app.use(cors({
+      origin: process.env.NODE_ENV === 'production'
+        ? process.env.ALLOWED_ORIGINS?.split(',')
+        : '*',
+      credentials: true
+    }));
   }
 
   /**

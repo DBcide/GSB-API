@@ -4,12 +4,13 @@ import service from '../services/Portefeuille';
 class PortefeuilleController {
 
     // Suivre un praticien
-    addPraticien = async (req: Request, res: Response) => {
+    addPraticien = async (req: Request, res: Response): Promise<void> => {
         try {
             const { idVisiteur, idPraticien } = req.body;
 
             if (!idVisiteur || !idPraticien) {
-                return res.status(400).json({ error: 'idVisiteur et idPraticien sont obligatoires' });
+                res.status(400).json({ error: 'idVisiteur et idPraticien sont obligatoires' });
+                return;
             }
 
             const visiteur = await service.addPraticien(idVisiteur, idPraticien);
