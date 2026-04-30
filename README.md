@@ -260,12 +260,4 @@ L'application gère l'arrêt gracieux (SIGINT/Ctrl+C) en :
 
 ## Auteur
 
-Adriano74f
-
-## Licence
-
-ISC
-
----
-
-Pour toute question ou contribution, n'hésitez pas à ouvrir une issue ou une pull request.
+DBcide
